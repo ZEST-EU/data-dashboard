@@ -1,0 +1,23 @@
+# Keep the build context small and the build reproducible: deps come from
+# `npm ci` and the bundle is produced inside the image, so never copy these in.
+node_modules
+dist
+dist-ssr
+
+# Local env / secrets must not leak into the image (vite.config.js only reads
+# them at dev time anyway).
+.env
+.env.*
+!.env.example
+*.local
+
+# VCS, CI, editor, and doc cruft — irrelevant to the build.
+.git
+.github
+.gitignore
+.DS_Store
+*.log
+docs
+README.md
+Dockerfile
+.dockerignore

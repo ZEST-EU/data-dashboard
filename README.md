@@ -84,6 +84,54 @@ Browser ──/api/orion/*──▶  Vite proxy ──▶ Orion-LD :1026   (adds
 - `src/components/` — `Header`, `MeasurementPicker` (search + grouped multi-select),
   `Dashboard` (state + toolbar), `MeasurementChart` (one card, Recharts).
 
+## Production image (nginx)
+
+For deployment the app is built to static files and served by **nginx**, which
+also reverse-proxies the two FIWARE backends — doing at runtime what the Vite
+dev-server proxy does in development (prefix stripping + FIWARE header
+injection). The browser keeps calling the same `/api/*` paths, so `src/` is
+unchanged.
+
+```
+Browser ──/ (static SPA) ─────────────▶ nginx  (serves dist/, SPA fallback)
+        ──/api/orion/* ───────────────▶ nginx ──▶ Orion-LD      (adds Link + NGSILD-Tenant)
+        ──/api/quantumleap/* ─────────▶ nginx ──▶ QuantumLeap   (adds Fiware-ServicePath)
+```
+
+Backends and tenant are **runtime** env vars (nothing is baked into the bundle),
+so one image works across environments:
+
+| Env var | Default | Purpose |
+|---|---|---|
+| `ORION_URL` | `http://orion:1026` | Orion-LD upstream (k8s service DNS name in-cluster) |
+| `QUANTUMLEAP_URL` | `http://quantumleap:8668` | QuantumLeap upstream |
+| `ORION_TENANT` | `opcua_biopc` | Sent as `NGSILD-Tenant`. **Set empty** to target the default-tenant mock data. |
+| `NGSILD_CONTEXT` | smart-data-models Device context | `@context` for the Orion `Link` header |
+
+Build and run locally:
+
+```bash
+docker build -t zest-dashboard .
+docker run --rm -p 8080:80 \
+  -e ORION_URL=http://host.docker.internal:1026 \
+  -e QUANTUMLEAP_URL=http://host.docker.internal:8668 \
+  -e ORION_TENANT= \
+  zest-dashboard
+# open http://localhost:8080
+```
+
+## CI/CD (GitHub Actions)
+
+`.github/workflows/docker-publish.yml` builds the image and pushes it to the
+GitHub Container Registry (`ghcr.io/zest-eu/data-dashboard`) **when you create a
+version tag**. From the GitHub web UI: **Releases → Draft a new release →**
+choose a new tag like `v1.2.3` **→ Publish** (or `git push origin v1.2.3`).
+
+A tag `v1.2.3` publishes `:1.2.3`, `:1.2`, `:latest`, and a short-SHA tag. The
+workflow uses the built-in `GITHUB_TOKEN` (no secrets to configure); the first
+run creates the package — set its visibility under the repo's **Packages** if it
+needs to be public.
+
 ## Notes / future work
 
 - `public/zest-logo.svg` is a **placeholder** — swap it for the real ZEST logo.

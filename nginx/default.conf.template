@@ -1,0 +1,55 @@
+# Rendered at container start from this template by nginx's envsubst entrypoint
+# (values for ${ORION_URL} / ${QUANTUMLEAP_URL} / ${ORION_TENANT} /
+# ${NGSILD_CONTEXT} come from the environment — see the Dockerfile for defaults).
+#
+# This server does the two jobs the Vite dev-server proxy does in development:
+#   1. serve the built SPA (with history fallback), and
+#   2. reverse-proxy the same-origin /api/* paths the browser calls to Orion-LD
+#      and QuantumLeap, injecting the FIWARE headers each one requires.
+
+server {
+    listen      80;
+    listen      [::]:80;
+    server_name _;
+
+    root  /usr/share/nginx/html;
+    index index.html;
+
+    # Compress text responses on the fly.
+    gzip            on;
+    gzip_vary       on;
+    gzip_min_length 1024;
+    gzip_proxied    any;
+    gzip_types      text/plain text/css application/javascript application/json image/svg+xml;
+
+    # Long-cache Vite's fingerprinted build assets; a missing asset is a 404
+    # (not the SPA fallback below).
+    location /assets/ {
+        expires    1y;
+        add_header Cache-Control "public, immutable";
+        try_files  $uri =404;
+    }
+
+    # SPA: serve index.html for any route the client-side app owns.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Orion-LD (NGSI-LD): strip the /api/orion prefix, add the @context Link
+    # header, and add NGSILD-Tenant when ORION_TENANT is set (nginx drops a
+    # header whose value is the empty string, matching the dev proxy).
+    location /api/orion/ {
+        proxy_pass         ${ORION_URL}/;
+        proxy_http_version 1.1;
+        proxy_set_header   Link '<${NGSILD_CONTEXT}>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"';
+        proxy_set_header   NGSILD-Tenant "${ORION_TENANT}";
+    }
+
+    # QuantumLeap (NGSI-v2): strip the /api/quantumleap prefix and add the
+    # mandatory Fiware-ServicePath header.
+    location /api/quantumleap/ {
+        proxy_pass         ${QUANTUMLEAP_URL}/;
+        proxy_http_version 1.1;
+        proxy_set_header   Fiware-ServicePath "/";
+    }
+}
