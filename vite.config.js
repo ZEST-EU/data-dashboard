@@ -14,6 +14,9 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
     const orionUrl = env.VITE_ORION_URL || 'http://localhost:1026';
     const qlUrl = env.VITE_QL_URL || 'http://localhost:8668';
+    // zest-data-api — the PostgreSQL-backed store for experimental datasets
+    // (separate from the Orion/QuantumLeap live feed above).
+    const dataApiUrl = env.VITE_DATA_API_URL || 'http://localhost:8091';
     // Tenant for Orion-LD reads. Defaults to the BioPC feed; set VITE_ORION_TENANT=
     // (empty) to target the zest-cloud mock data in the default tenant.
     const orionTenant = env.VITE_ORION_TENANT ?? '/';
@@ -53,6 +56,13 @@ export default defineConfig(({ mode }) => {
                             proxyReq.setHeader('Fiware-ServicePath', '/');
                         });
                     }
+                },
+                // zest-data-api: experimental dataset store. No special headers; the
+                // API routes live at its root, so we strip the /api/data prefix.
+                '/api/data': {
+                    target: dataApiUrl,
+                    changeOrigin: true,
+                    rewrite: (p) => p.replace(/^\/api\/data/, '')
                 }
             }
         }

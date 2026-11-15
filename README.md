@@ -1,14 +1,25 @@
 # ZEST Dashboard
 
-A simple React dashboard for the ZEST FIWARE pipeline. It lists the live
-`DeviceMeasurement` entities from **Orion-LD**, lets you pick which ones to view,
-and charts each one's history from **QuantumLeap**.
+A simple React dashboard for the ZEST platform, with two tabs:
+
+**Live feed** — lists the live `DeviceMeasurement` entities from **Orion-LD**, lets you pick which
+ones to view, and charts each one's history from **QuantumLeap**:
 
 - **Numeric** measurements (`numValue`) → line chart
 - **Boolean** measurements (`boolValue`, e.g. alarms) → step chart (0/1)
 - **Text** measurements (`textValue`) → latest-values table
 
+**Datasets** — a standard multi-file upload form plus a list of experimental fermentation datasets.
+Files are stored in **MinIO** (object storage) behind [`zest-data-api`](../zest-data-api); upload a
+bundle of files as one named dataset, then browse and download them (per-file or as a zip). This is a
+**separate flow** from the Orion live feed above. The dashboard reaches the API same-origin at
+`/api/data` (proxied in dev by `vite.config.js`, in prod by nginx). Point it with `VITE_DATA_API_URL`
+(dev) / `DATA_API_URL` (prod); defaults are `http://localhost:8091` / `http://zest-data-api:8091`.
+Start `zest-data-api` (plus its `db` + `minio`) before using the tab.
+
 ![Dashboard example image](./docs/dashboard_example.png)
+
+![Dashboard dataset management](./docs/dashboard_datasets.png)
 
 ## Prerequisites
 

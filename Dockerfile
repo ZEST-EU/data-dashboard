@@ -23,9 +23,10 @@ ENV ORION_URL=http://orion:1026
 ENV QUANTUMLEAP_URL=http://quantumleap:8668
 ENV ORION_TENANT=opcua_biopc
 ENV NGSILD_CONTEXT=https://raw.githubusercontent.com/smart-data-models/dataModel.Device/master/context.jsonld
+ENV DATA_API_URL=http://zest-data-api:8091
 # Restrict nginx's startup envsubst to exactly our placeholders, so nginx's own
 # runtime variables ($host, $uri, ...) are never touched.
-ENV NGINX_ENVSUBST_FILTER="^(ORION_URL|QUANTUMLEAP_URL|ORION_TENANT|NGSILD_CONTEXT)\$"
+ENV NGINX_ENVSUBST_FILTER="^(ORION_URL|QUANTUMLEAP_URL|ORION_TENANT|NGSILD_CONTEXT|DATA_API_URL)\$"
 
 # nginx's entrypoint renders every *.template here through envsubst at startup,
 # writing the result to /etc/nginx/conf.d/ (so this replaces the stock default).

@@ -409,6 +409,205 @@ body {
     font-size: 12px;
 }
 
+/* --- Header nav tabs --------------------------------------------- */
+.nav {
+    display: flex;
+    gap: 4px;
+}
+.nav-tab {
+    padding: 6px 14px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: none;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.nav-tab:hover {
+    background: var(--surface-2);
+}
+.nav-tab.is-active {
+    color: var(--accent);
+    background: var(--accent-weak);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* --- Button variants --------------------------------------------- */
+.btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+.btn-primary:hover {
+    background: color-mix(in srgb, var(--accent) 88%, #000);
+}
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+    text-decoration: none;
+    display: inline-block;
+}
+.btn-danger {
+    color: #e34948;
+    border-color: color-mix(in srgb, #e34948 35%, transparent);
+}
+.btn-danger:hover {
+    background: color-mix(in srgb, #e34948 12%, transparent);
+}
+
+/* --- Upload card -------------------------------------------------- */
+.upload-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+.file-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    background: var(--page);
+}
+.file-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.file-label .req {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 11px;
+}
+.file-field input[type='file'] {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+.file-name {
+    font-size: 12px;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.text-input {
+    width: 100%;
+    padding: 7px 9px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--page);
+    color: var(--text-primary);
+    font-size: 13px;
+}
+.text-input:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+}
+.file-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* --- OK banner (upload success) ---------------------------------- */
+.banner-ok {
+    background: color-mix(in srgb, var(--series-2) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--series-2) 35%, transparent);
+}
+
+/* --- Dataset table ----------------------------------------------- */
+.table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+.dataset-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.dataset-table th,
+.dataset-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+.dataset-table th {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--surface-1);
+}
+.dataset-row {
+    cursor: pointer;
+}
+.dataset-row:hover {
+    background: var(--surface-2);
+}
+.dataset-row.is-open {
+    background: var(--accent-weak);
+}
+.chevron {
+    width: 24px;
+    color: var(--muted);
+}
+.ds-name {
+    font-weight: 600;
+}
+.row-actions {
+    display: flex;
+    gap: 6px;
+    white-space: nowrap;
+}
+.badge-synthetic {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    background: var(--accent-weak);
+}
+.badge-experimental {
+    color: var(--series-2);
+    border-color: color-mix(in srgb, var(--series-2) 35%, transparent);
+    background: color-mix(in srgb, var(--series-2) 12%, transparent);
+}
+
+/* --- Dataset detail panel ---------------------------------------- */
+.detail-row td {
+    background: var(--surface-1);
+    padding: 0;
+}
+.detail-panel {
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.detail-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+.file-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.detail-note {
+    margin: 0;
+}
+
 /* --- Responsive: stack the sidebar on narrow screens ------------- */
 @media (max-width: 760px) {
     .dashboard {
